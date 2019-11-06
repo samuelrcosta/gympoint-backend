@@ -1,0 +1,13 @@
+<strong>Olá, {{ student }}</strong>
+<p>Sua matrícula foi realizada com sucesso no GymPoint!<br />
+<br />
+Veja os detalhes:</p>
+<p>
+  <strong>Data da Matrícula :</strong> {{ enroll.created_at }} <br />
+  <strong>Plano: </strong> {{ plan.title }} <br />
+  <strong>Duração: </strong> {{ plan.duration }} <br />
+  <strong>Data de Início: </strong> {{ enroll.start_date }} <br />
+  <strong>Data Fim: </strong> {{ enroll.end_date }} <br />
+  <strong>Valor Total: </strong> {{ enroll.price }} <br />
+</p>
+<p>Qualquer dúvida entre em contato no e-mail contato@gympoint.com</p>
