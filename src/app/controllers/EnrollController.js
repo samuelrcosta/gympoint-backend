@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
-import { parseISO, addMonths, format } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { parseISO, addMonths } from 'date-fns';
 import Enroll from '../models/Enroll';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
-import Mail from '../../lib/Mail';
+import EnrollEmail from '../jobs/EnrollMail';
+import Queue from '../../lib/Queue';
 
 class EnrrollController {
   async index(req, res) {
@@ -78,34 +78,7 @@ class EnrrollController {
 
     const enroll = await Enroll.create({ ...req.body, end_date, price });
 
-    await Mail.sendMail({
-      to: `${student.name} <${student.email}>`,
-      subject: `Matrícula Realizada`,
-      template: 'enroll',
-      context: {
-        student: student.name,
-        enroll: {
-          created_at: format(enroll.createdAt, "dd'/'MM'/'yyyy', às' H:mm'h'", {
-            locale: pt,
-          }),
-          start_date: format(
-            enroll.start_date,
-            "dd'/'MM'/'yyyy', às' H:mm'h'",
-            {
-              locale: pt,
-            }
-          ),
-          end_date: format(enroll.end_date, "dd'/'MM'/'yyyy', às' H:mm'h'", {
-            locale: pt,
-          }),
-          price: parseFloat(enroll.price).toFixed(2),
-        },
-        plan: {
-          ...plan,
-          durationSuffix: plan.duration === 1 ? 'mes' : 'meses',
-        },
-      },
-    });
+    await Queue.add(EnrollEmail.key, { student, enroll, plan });
 
     return res.json(enroll);
   }

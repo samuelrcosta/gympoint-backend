@@ -5,7 +5,7 @@ Veja os detalhes:</p>
 <p>
   <strong>Data da Matrícula :</strong> {{ enroll.created_at }} <br />
   <strong>Plano: </strong> {{ plan.title }} <br />
-  <strong>Duração: </strong> {{ plan.duration }} <br />
+  <strong>Duração: </strong> {{ plan.duration }} {{ plan.durationSuffix }} <br />
   <strong>Data de Início: </strong> {{ enroll.start_date }} <br />
   <strong>Data Fim: </strong> {{ enroll.end_date }} <br />
   <strong>Valor Total: </strong> {{ enroll.price }} <br />
