@@ -1,10 +1,11 @@
 import Bee from 'bee-queue';
 import * as Sentry from '@sentry/node';
 import EnrollMail from '../app/jobs/EnrollMail';
+import HelpOrderMail from '../app/jobs/HelpOrderMail';
 import redisConfig from '../config/redis';
 import sentryConfig from '../config/sentry';
 
-const jobs = [EnrollMail];
+const jobs = [EnrollMail, HelpOrderMail];
 
 class Queue {
   constructor() {
