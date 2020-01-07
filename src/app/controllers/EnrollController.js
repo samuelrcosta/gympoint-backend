@@ -20,6 +20,7 @@ class EnrrollController {
         'start_date',
         'end_date',
         'price',
+        'active',
         'created_at',
       ],
       limit: 20,
