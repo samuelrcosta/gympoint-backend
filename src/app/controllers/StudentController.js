@@ -87,6 +87,31 @@ class StudentController {
 
     return res.json(updatedStudent);
   }
+
+  async delete(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .positive()
+        .integer()
+        .required(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res.status(400).json({ error: 'Validation fails.' });
+    }
+
+    const { id } = req.params;
+
+    const student = await Student.findByPk(id);
+
+    if (!student) {
+      return res.status(400).json({ error: 'Student not found.' });
+    }
+
+    await student.destroy();
+
+    return res.status(202).send();
+  }
 }
 
 export default new StudentController();
