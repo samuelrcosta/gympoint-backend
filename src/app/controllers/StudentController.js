@@ -96,7 +96,7 @@ class StudentController {
       return res.status(400).json({ error: 'Student not found.' });
     }
 
-    if (req.body.email) {
+    if (req.body.email && req.body.email !== student.email) {
       const stundetExists = await Student.findOne({
         where: { email: req.body.email },
       });
