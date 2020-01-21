@@ -42,6 +42,54 @@ class EnrrollController {
     return res.json(enrolls);
   }
 
+  async show(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .positive()
+        .integer()
+        .required(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res.status(400).json({ error: 'Validation fails.' });
+    }
+
+    const { id } = req.params;
+
+    const enroll = await Enroll.findOne({
+      where: { id },
+      order: ['created_at'],
+      attributes: [
+        'id',
+        'student_id',
+        'plan_id',
+        'start_date',
+        'end_date',
+        'price',
+        'active',
+        'created_at',
+      ],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title', 'duration'],
+        },
+      ],
+    });
+
+    if (!enroll) {
+      return res.status(400).json({ error: 'Plan not found.' });
+    }
+
+    return res.json(enroll);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       student_id: Yup.number()
