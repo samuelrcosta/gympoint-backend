@@ -1,12 +1,12 @@
 import Sequelize, { Model } from 'sequelize';
-import { isBefore, isAfter } from 'date-fns';
+import { isBefore, isAfter, parseISO } from 'date-fns';
 
 class Enroll extends Model {
   static init(sequelize) {
     super.init(
       {
-        start_date: Sequelize.DATE,
-        end_date: Sequelize.DATE,
+        start_date: Sequelize.DATEONLY,
+        end_date: Sequelize.DATEONLY,
         price: Sequelize.FLOAT,
         deleted_at: Sequelize.DATE,
         active: {
@@ -16,8 +16,8 @@ class Enroll extends Model {
           ]),
           get() {
             return (
-              isBefore(this.get('start_date'), new Date()) &&
-              isAfter(this.get('end_date'), new Date())
+              isBefore(parseISO(this.get('start_date')), new Date()) &&
+              isAfter(parseISO(this.get('end_date')), new Date())
             );
           },
         },

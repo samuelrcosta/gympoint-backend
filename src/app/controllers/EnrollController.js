@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { parseISO, addMonths } from 'date-fns';
+import { parseISO, addMonths, format } from 'date-fns';
 import Enroll from '../models/Enroll';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
@@ -121,7 +121,10 @@ class EnrrollController {
       return res.status(400).json({ error: 'Student nor found' });
     }
 
-    const end_date = addMonths(parseISO(start_date), plan.duration);
+    const end_date = format(
+      addMonths(parseISO(start_date), plan.duration),
+      "yyyy'-'MM'-'dd"
+    );
 
     const price = plan.price * plan.duration;
 
@@ -160,14 +163,14 @@ class EnrrollController {
 
     const plan = await Plan.findByPk(plan_id);
 
-    let { start_date } = enroll;
-
     if (req.body.start_date) {
-      start_date = parseISO(req.body.start_date);
-      enroll.start_date = start_date;
+      enroll.start_date = req.body.start_date;
     }
 
-    enroll.end_date = addMonths(start_date, plan.duration);
+    enroll.end_date = format(
+      addMonths(parseISO(enroll.start_date), plan.duration),
+      "yyyy'-'MM'-'dd"
+    );
 
     if (enroll.plan_id !== plan.id) {
       enroll.plan_id = plan_id;
