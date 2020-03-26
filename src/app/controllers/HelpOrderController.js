@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import HelpOrder from '../models/HelpOrder';
 import Student from '../models/Student';
+import HelpOrderService from '../services/HelpOrderService';
 
 class HelpOrderController {
   async index(req, res) {
@@ -58,6 +59,16 @@ class HelpOrderController {
 
     if (!student) {
       return res.status(400).json({ error: 'Student not found.' });
+    }
+
+    const isActiveStudent = await HelpOrderService.isStudentHaveActivePlan(
+      student
+    );
+
+    if (!isActiveStudent) {
+      return res
+        .status(403)
+        .json({ error: 'This student dont have a active Plan.' });
     }
 
     const helpOrder = await HelpOrder.create({ student_id, question });

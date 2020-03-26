@@ -4,6 +4,8 @@ import { startOfDay, subDays } from 'date-fns';
 import Checkin from '../models/Checkin';
 import Student from '../models/Student';
 
+import CheckinService from '../services/CheckinService';
+
 class CheckinController {
   async index(req, res) {
     const schema = Yup.object().shape({
@@ -56,6 +58,14 @@ class CheckinController {
 
     if (!student) {
       return res.status(400).json({ error: 'Student not found.' });
+    }
+
+    const isActive = await CheckinService.isStudentHaveActivePlan(student);
+
+    if (!isActive) {
+      return res
+        .status(403)
+        .json({ error: 'This student dont have a active Plan.' });
     }
 
     const lastCheckins = await Checkin.findAll({
