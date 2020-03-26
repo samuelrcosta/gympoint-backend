@@ -17,6 +17,10 @@ class Student extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.hasMany(models.Enroll, { foreignKey: 'student_id', as: 'enrolls' });
+  }
 }
 
 export default Student;
