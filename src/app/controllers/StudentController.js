@@ -40,7 +40,7 @@ class StudentController {
 
     const { id } = req.params;
 
-    const student = await Student.findByPk(id, {
+    const student = await Student.findOne({
       include: [
         {
           model: Enroll,
@@ -53,6 +53,11 @@ class StudentController {
           ],
         },
       ],
+      where: {
+        id,
+        '$enrolls.deleted_at$': null,
+      },
+      order: [['enrolls', 'end_date', 'DESC']],
     });
 
     if (!student) {
